@@ -1,0 +1,25 @@
+# Core AWS Dependencies
+boto3>=1.28.0
+botocore>=1.31.0
+
+# Streamlit and Web
+streamlit>=1.29.0
+requests>=2.31.0
+
+# Image Processing
+Pillow>=10.0.0
+
+# Data Handling & Utilities
+pandas>=2.0.0
+numpy>=1.24.0
+python-dotenv>=1.0.0
+pytz>=2023.3
+
+# LLM & AI Tools
+langchain>=0.1.0
+langchain-community>=0.0.10
+pydantic>=2.0.0
+
+# Development Tools (Optional)
+black>=23.0.0  # code formatting
+pytest>=7.0.0  # testing

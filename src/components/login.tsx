@@ -22,6 +22,7 @@ import { Select, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import axios from "axios"
 import { Link, Navigate, useNavigate } from "react-router-dom"
 import { Alert, AlertTitle } from "./ui/alert"
+import { BASEURL } from "../util/baseUrl"
 
 const LoginScreen = () => {
 
@@ -36,7 +37,7 @@ const LoginScreen = () => {
 
     const handleSubmit = async () => {
         setLoading(true);
-        axios.post("http://localhost:3001/api/login", loginData).then(res => {
+        axios.post(`${BASEURL}/login`, loginData).then(res => {
 
             setLoading(false);
             localStorage.setItem('musette-jwt', res.data.jwt);

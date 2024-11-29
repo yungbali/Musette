@@ -12,6 +12,7 @@ import { CardFooter } from "./ui/card"
 
 import axios from "axios"
 import { Link, Navigate, useNavigate } from "react-router-dom"
+import { BASEURL } from "../util/baseUrl"
 
 const SignupScreen = () => {
 
@@ -30,7 +31,7 @@ const SignupScreen = () => {
     const handleSubmit = async () => {
         setLoading(true);
         setError("");
-        axios.post("http://localhost:3001/api/signup", loginData).then(res => {
+        axios.post(`${BASEURL}/SIGNUP`, loginData).then(res => {
             setLoading(false);
             localStorage.setItem('musette-jwt', res.data.jwt);
             navigation('/');

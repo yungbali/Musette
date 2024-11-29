@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
+import { BASEURL } from '../util/baseUrl';
 
 
 
@@ -92,7 +93,7 @@ const useMarketingPlan = () => {
   const handleSubmitted = async () => {
     setLoading(true);
     setError("");
-    axios.post("http://localhost:3001/api/generate-a-marketing-plan", prompt).then(res => {
+    axios.post(`${BASEURL}/generate-a-marketing-plan`, prompt).then(res => {
       console.log(res.data);
       setLoading(false);
     }).catch(err => {
@@ -105,7 +106,7 @@ const useMarketingPlan = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch('http://localhost:3001/api/generate-a-marketing-plan', {
+      const response = await fetch(`${BASEURL}/generate-a-marketing-plan`, {
         body: JSON.stringify(prompt),
         method: 'POST',
         headers:{

@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import MarkDownDisplay from './react-markdown'
+import { BASEURL } from '../util/baseUrl'
 
 
 
@@ -125,7 +126,7 @@ const useAiMarketingAdvisor = () => {
 
     // return;
     try {
-      const response = await fetch('http://localhost:3001/api/generate-marketing-advice', {
+      const response = await fetch(`${BASEURL}/generate-marketing-advice`, {
         body: JSON.stringify(prompt),
         method: 'POST',
         headers:{

@@ -20,6 +20,7 @@ import placeholderImage from "./assets/placeholder-image.svg"
 import { Navigate } from "react-router-dom"
 import axios from "axios"
 import { Alert, AlertTitle } from "./components/ui/alert"
+import { BASEURL } from "./util/baseUrl"
 
 
 
@@ -32,7 +33,7 @@ const useFetchReviews = ({refetch}) => {
   useEffect(() => {
 
     async function getReviews() {
-      axios.get("http://localhost:3001/api/review", {
+      axios.get(`${BASEURL}/review`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("musette-jwt")}`
         }

@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import EpkGenerationForm from './epk-creation-form';
+import { BASEURL } from '../util/baseUrl';
 
 
 
@@ -118,7 +119,7 @@ const useEpkGenerator = () => {
 
 
     try {
-      const response = await fetch('http://localhost:3001/api/generate-epk', {
+      const response = await fetch(`${BASEURL}/generate-epk`, {
         body: formData,
         method: 'POST'
       });

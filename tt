@@ -1,0 +1,11 @@
+{
+    goals: string;
+    artist_name: string;
+    genre: string;
+    target_audience: string;
+    additional_information: string;
+    assets: string;
+    budget: string;
+    channels: string;
+    timeline: string;
+}

@@ -107,7 +107,10 @@ const useMarketingPlan = () => {
     try {
       const response = await fetch('http://localhost:3001/api/generate-a-marketing-plan', {
         body: JSON.stringify(prompt),
-        method: 'POST'
+        method: 'POST',
+        headers:{
+          Authorization: `Bearer ${localStorage.getItem("musette-jwt")}`
+        }
       });
 
       if (response.ok) {

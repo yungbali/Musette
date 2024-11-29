@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { Button } from './ui/button';
 import { Download } from 'lucide-react';
 
-const MarkDownDisplay = ({ text, title = "Generated market Plan", btnText = "Download as Markdown" }) => {
+const MarkDownDisplay = ({ text, title = "Generated market Plan", btnText = "Download" }) => {
 
   const [markdownText, setMarkdownText] = useState(text);
   const handleChange = (event) => {

@@ -42,7 +42,7 @@ function AlertDialogDemo({ loading, data, error, handleInputChange, handleSubmit
     <AlertDialog>
       <AlertDialogTrigger className="flex items-center justify-end" asChild>
         <div className='flex items-center justify-end'>
-          <Button variant="outline" onClick={()=> {
+          <Button variant="outline" onClick={() => {
 
           }}>Generate New Market Plan</Button>
         </div>
@@ -66,27 +66,27 @@ function AlertDialogDemo({ loading, data, error, handleInputChange, handleSubmit
 
 const useEpkGenerator = () => {
 
-  const [isDone, setIsDone] = useState(false); 
+  const [isDone, setIsDone] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState("");
   const [prompt, setPrompt] = useState({
 
     artist_name: '',
-        biography: '',
-        genre: '',
-        profile_picture: '',
-        music_links: '',
-        social_media: '',
-        press_release_news: '',
-        achievements: '',
-        contact_information: ''
+    biography: '',
+    genre: '',
+    profile_picture: '',
+    music_links: '',
+    social_media: '',
+    press_release_news: '',
+    achievements: '',
+    contact_information: ''
   });
 
 
   const handleInputChange = e => {
 
-    if(e.target.id === 'profile_picture') {
+    if (e.target.id === 'profile_picture') {
 
       setPrompt(prevPrompt => ({
         ...prevPrompt,
@@ -102,20 +102,25 @@ const useEpkGenerator = () => {
   };
 
   const handleSubmit = async () => {
-    // setLoading(true);
-    // setError("");
+    setLoading(true);
+    setError("");
+
+    const formData = new FormData();
+    for(const [key, val] of Object.entries(prompt)) {
+      if(key === 'profile_picture') continue;
+      formData.append(key, val);
+    }
+
+    formData.append('image', prompt.profile_picture[0]);
+    for (const pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
 
 
-    console.log(prompt);
-
-    return;
     try {
-      const response = await fetch('http://localhost:3001/api/generate-a-marketing-plan', {
-        body: JSON.stringify(prompt),
-        method: 'POST',
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
+      const response = await fetch('http://localhost:3001/api/generate-epk', {
+        body: formData,
+        method: 'POST'
       });
 
       if (response.ok) {

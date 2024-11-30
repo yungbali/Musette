@@ -1,15 +1,14 @@
 import MarkDownDisplay from './react-markdown'
 import MarketingPlansForm from './marketing-plans-form'
-import { ReactNode, useState } from 'react';
-import axios from "axios"
+import { useState } from 'react';
 
 
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
+} from "./ui/alert-dialog"
+import { Button } from "./ui/button"
 import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import { BASEURL } from '../util/baseUrl';
 
@@ -18,7 +17,7 @@ import { BASEURL } from '../util/baseUrl';
 interface PropsData {
   data: string;
   error: string;
-  handleInputChange: (e: React.ChangeEventHandler) => void;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   handleSubmit: () => Promise<void>;
   loading: boolean;
   prompt: {
@@ -66,7 +65,6 @@ function AlertDialogDemo({ loading, data, error, handleInputChange, handleSubmit
 
 const useMarketingPlan = () => {
 
-  const [isDone, setIsDone] = useState(false); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState("");
@@ -83,24 +81,13 @@ const useMarketingPlan = () => {
   });
 
 
-  const handleInputChange = e => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setPrompt(prevPrompt => ({
       ...prevPrompt,
       [e.target.id]: e.target.value
     }));
   };
 
-  const handleSubmitted = async () => {
-    setLoading(true);
-    setError("");
-    axios.post(`${BASEURL}/generate-a-marketing-plan`, prompt).then(res => {
-      console.log(res.data);
-      setLoading(false);
-    }).catch(err => {
-      console.log('Error Submitting data: ', err);
-      setLoading(false);
-    });
-  };
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -120,10 +107,12 @@ const useMarketingPlan = () => {
         const decoder = new TextDecoder();
         let done = false;
         while (!done) {
-          const { value, done: streamDone } = await reader?.read();
-          done = streamDone;
-          if (value) {
-            setData((prevData) => prevData + decoder.decode(value)); // Append new chunks
+          if(reader) {
+            const { value, done: streamDone } = await reader.read();
+            done = streamDone;
+            if (value) {
+              setData((prevData) => prevData + decoder.decode(value)); // Append new chunks
+            }
           }
         }
       }

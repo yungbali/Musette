@@ -1,24 +1,12 @@
 'use client'
 
-import { useState, useEffect } from "react"
-import { ArrowLeft, PenTool, FileText, ImageIcon, MessageSquare, Star, PlusCircle, LucideLoaderCircle, Terminal } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Progress } from "@/components/ui/progress"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-// import Link from "next/link"
-// import Image from "next/image"
-import { MarketingPlans } from "./components/marketing-plans"
-import { EPKCreation } from "./components/epk-creation"
-import { AlbumArtwork } from "./components/album-artwork"
-import { AIMarketingAdvisor } from "./components/ai-marketing-advisor"
-
-import placeholderImage from "./assets/placeholder-image.svg"
+import { useState } from "react"
+import { LucideLoaderCircle, Terminal } from 'lucide-react'
+import { Button } from "./ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"
 import { CardFooter } from "./ui/card"
-import { Select, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import axios from "axios"
 import { Link, Navigate, useNavigate } from "react-router-dom"
 import { Alert, AlertTitle } from "./ui/alert"
@@ -75,7 +63,7 @@ const LoginScreen = () => {
                     <div className="space-y-4">
                         <div>
                             <Label htmlFor="email">Email</Label>
-                            <Input onChange={e => setLoginData(prevData => ({ ...prevData, email: e.target.value }))}
+                            <Input onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setLoginData(prevData => ({ ...prevData, email: e.target.value }))}
                                 value={loginData.email}
                                 id="email"
                                 type="text"
@@ -84,7 +72,7 @@ const LoginScreen = () => {
                         </div>
                         <div>
                             <Label htmlFor="password">Password</Label>
-                            <Input onChange={e => setLoginData(prevData => ({ ...prevData, password: e.target.value }))}
+                            <Input onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setLoginData(prevData => ({ ...prevData, password: e.target.value }))}
                                 value={loginData.password}
                                 id="password"
                                 type="password"

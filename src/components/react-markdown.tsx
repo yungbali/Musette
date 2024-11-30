@@ -3,33 +3,35 @@ import ReactMarkdown from 'react-markdown';
 import { Button } from './ui/button';
 import { Download } from 'lucide-react';
 
-const MarkDownDisplay = ({ text, title = "Generated market Plan", btnText = "Download" }) => {
+const MarkDownDisplay = ({ text, title = "Generated market Plan", btnText = "Download" }: { text?: string; title?: string; btnText?: string; }) => {
 
   const [markdownText, setMarkdownText] = useState(text);
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setMarkdownText(event.target.value);
   };
 
 
   const handleExportToTxt = () => {
-    // Create a Blob with the markdown content
-    const blob = new Blob([markdownText], { type: "text/plain" });
+    if (markdownText) {
+      // Create a Blob with the markdown content
+      const blob = new Blob([markdownText], { type: "text/plain" });
 
-    // Create a temporary URL for the blob
-    const url = URL.createObjectURL(blob);
+      // Create a temporary URL for the blob
+      const url = URL.createObjectURL(blob);
 
-    // Create a link element to trigger the download
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "example.txt"; // Set the filename for the download
-    document.body.appendChild(link);
+      // Create a link element to trigger the download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "example.txt"; // Set the filename for the download
+      document.body.appendChild(link);
 
-    // Trigger the download
-    link.click();
+      // Trigger the download
+      link.click();
 
-    // Clean up the URL and remove the link
-    URL.revokeObjectURL(url);
-    document.body.removeChild(link);
+      // Clean up the URL and remove the link
+      URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    }
   };
 
   return (

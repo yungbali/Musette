@@ -1,38 +1,35 @@
 import MarkDownDisplay from './react-markdown'
-import MarketingPlansForm from './marketing-plans-form'
-import { ReactNode, useState } from 'react';
-import axios from "axios"
-
+import { useState } from 'react';
 
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
+} from "./ui/alert-dialog"
+import { Button } from "./ui/button"
 import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import EpkGenerationForm from './epk-creation-form';
 import { BASEURL } from '../util/baseUrl';
 
-
+interface PromptType {
+  artist_name: string;
+  biography: string;
+  genre: string;
+  profile_picture: FileList | null;
+  music_links: string;
+  social_media: string;
+  press_release_news: string;
+  achievements: string;
+  contact_information: string;
+}
 
 interface PropsData {
   data: string;
   error: string;
-  handleInputChange: (e: React.ChangeEventHandler) => void;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   handleSubmit: () => Promise<void>;
   loading: boolean;
-  prompt: {
-    goals: string;
-    artist_name: string;
-    genre: string;
-    target_audience: string;
-    additional_information: string;
-    assets: string;
-    budget: string;
-    channels: string;
-    timeline: string;
-  }
+  prompt: PromptType;
 }
 
 
@@ -49,7 +46,7 @@ function AlertDialogDemo({ loading, data, error, handleInputChange, handleSubmit
         </div>
       </AlertDialogTrigger>
       {<AlertDialogContent>
-        <MarketingPlansForm
+        <EpkGenerationForm
           prompt={prompt}
           data={data} error={error}
           handleInputChange={handleInputChange}
@@ -67,16 +64,14 @@ function AlertDialogDemo({ loading, data, error, handleInputChange, handleSubmit
 
 const useEpkGenerator = () => {
 
-  const [isDone, setIsDone] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState("");
-  const [prompt, setPrompt] = useState({
-
+  const [prompt, setPrompt] = useState<PromptType>({
     artist_name: '',
     biography: '',
     genre: '',
-    profile_picture: '',
+    profile_picture: null,
     music_links: '',
     social_media: '',
     press_release_news: '',
@@ -85,16 +80,25 @@ const useEpkGenerator = () => {
   });
 
 
-  const handleInputChange = e => {
-
-    if (e.target.id === 'profile_picture') {
-
-      setPrompt(prevPrompt => ({
-        ...prevPrompt,
+  const handleFilInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setPrompt({
+        ...prompt,
         profile_picture: e.target.files
-      }));
-      return;
+      });
     }
+  };
+
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+
+    // if (e.target.id === 'profile_picture' && e.target instanceof HTMLInputElement && e.target.files) {
+    //   setPrompt(prevPrompt => ({
+    //     ...prevPrompt,
+    //     profile_picture: e.target.files
+    //   }));
+    //   return;
+    // }
 
     setPrompt(prevPrompt => ({
       ...prevPrompt,
@@ -107,12 +111,15 @@ const useEpkGenerator = () => {
     setError("");
 
     const formData = new FormData();
-    for(const [key, val] of Object.entries(prompt)) {
-      if(key === 'profile_picture') continue;
+    for (const [key, val] of Object.entries(prompt)) {
+      if (key === 'profile_picture') continue;
       formData.append(key, val);
     }
 
-    formData.append('image', prompt.profile_picture[0]);
+    if(prompt.profile_picture) {
+      formData.append('image', prompt.profile_picture[0]);
+    }
+    
     for (const pair of formData.entries()) {
       console.log(pair[0], pair[1]);
     }
@@ -130,10 +137,12 @@ const useEpkGenerator = () => {
         const decoder = new TextDecoder();
         let done = false;
         while (!done) {
-          const { value, done: streamDone } = await reader?.read();
-          done = streamDone;
-          if (value) {
-            setData((prevData) => prevData + decoder.decode(value)); // Append new chunks
+          if (reader) {
+            const { value, done: streamDone } = await reader.read();
+            done = streamDone;
+            if (value) {
+              setData((prevData) => prevData + decoder.decode(value)); // Append new chunks
+            }
           }
         }
       }
@@ -145,6 +154,7 @@ const useEpkGenerator = () => {
   return {
     handleSubmit,
     handleInputChange,
+    handleFilInputChange,
     data,
     loading,
     error,

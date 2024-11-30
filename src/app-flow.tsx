@@ -1,16 +1,13 @@
 'use client'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, ReactNode } from "react"
 import { ArrowLeft, PenTool, FileText, ImageIcon, MessageSquare, Star, PlusCircle, LucideLoaderCircle, Terminal } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Progress } from "@/components/ui/progress"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-// import Link from "next/link"
-// import Image from "next/image"
+import { Button } from "./components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs"
+import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar"
+import { Progress } from "./components/ui/progress"
+import { Label } from "./components/ui/label"
 import { MarketingPlans } from "./components/marketing-plans"
 import { EPKCreation } from "./components/epk-creation"
 import { AlbumArtwork } from "./components/album-artwork"
@@ -25,10 +22,11 @@ import { BASEURL } from "./util/baseUrl"
 
 
 
-const useFetchReviews = ({refetch}) => {
+const useFetchReviews = ({refetch}: {refetch: number}) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [data, setData] = useState(null);
+  // const [data, setData] = useState<{_id: string; name: string; message: string; rating: number;}[]>([]);
+  const [data, setData] = useState<Record<string, string | number>[]>([]);
 
   useEffect(() => {
 
@@ -64,7 +62,7 @@ const useFetchReviews = ({refetch}) => {
 export default function Component() {
   const [screen, setScreen] = useState<'onboarding' | 'dashboard' | 'service'>('onboarding')
   const [onboardingStep, setOnboardingStep] = useState(0)
-  const [credits, setCredits] = useState(250)
+  const [credits] = useState(250)
   const [showFeedback, setShowFeedback] = useState(false)
   const [activeService, setActiveService] = useState<string | null>(null)
 
@@ -338,10 +336,10 @@ export default function Component() {
                 {!reviewLoading && reviews && reviews?.length > 0 && reviews?.map(el => {
                   return (
                     <TestimonialCard key={el._id}
-                      name={el.name}
-                      quote={el.message}
+                      name={el.name as string}
+                      quote={el.message as string}
                       image="/placeholder.svg?height=64&width=64"
-                      rating={el.rating}
+                      rating={el.rating as number}
                     />
                   );
                 })}
@@ -416,7 +414,8 @@ export default function Component() {
   )
 }
 
-function ServiceCard({ title, description, icon, credits, onClick }) {
+function ServiceCard({ title, description, icon, credits, onClick }: 
+  {title: string; description: string; icon: ReactNode; credits: number; onClick: ()=> void}) {
   return (
     <Card className="relative overflow-hidden">
       <CardHeader className="pb-0">
@@ -435,7 +434,7 @@ function ServiceCard({ title, description, icon, credits, onClick }) {
   )
 }
 
-function TestimonialCard({ name, quote, image, rating }) {
+function TestimonialCard({ name, quote, image, rating }: {name: string; quote: string; image: string; rating: number;}) {
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-6">

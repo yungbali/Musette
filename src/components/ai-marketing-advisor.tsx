@@ -1,19 +1,12 @@
 import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ChevronLeft, ChevronRight, Send } from 'lucide-react'
-import axios from 'axios'
+import { Button } from "./ui/button"
 import AiMarketingAdvisorForm from './ai-marketing-advisor-form'
 
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "./ui/alert-dialog"
 import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import MarkDownDisplay from './react-markdown'
 import { BASEURL } from '../util/baseUrl'
@@ -23,7 +16,8 @@ import { BASEURL } from '../util/baseUrl'
 interface PropsData {
   data: string;
   error: string;
-  handleInputChange: (e: React.ChangeEventHandler) => void;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+    handleSlectInputChange: (value: string)=> void;
   handleSubmit: () => Promise<void>;
   loading: boolean;
   prompt: {
@@ -40,7 +34,7 @@ interface PropsData {
 
 
 // function AlertDialogDemo({ children, onClick, loading }: { children: ReactNode, onClick: () => void, loading: boolean }) {
-function AlertDialogDemo({ loading, data, error, handleInputChange, handleSubmit, prompt }: PropsData) {
+function AlertDialogDemo({ loading, data, error, handleSlectInputChange, handleInputChange, handleSubmit, prompt }: PropsData) {
   return (
     <AlertDialog>
       <AlertDialogTrigger className="flex items-center justify-end" asChild>
@@ -58,6 +52,7 @@ function AlertDialogDemo({ loading, data, error, handleInputChange, handleSubmit
           error={error}
           loading={loading}
           handleInputChange={handleInputChange}
+          handleSlectInputChange={handleSlectInputChange}
         />
         <AlertDialogCancel>Cancel</AlertDialogCancel>
       </AlertDialogContent>}
@@ -68,7 +63,6 @@ function AlertDialogDemo({ loading, data, error, handleInputChange, handleSubmit
 
 const useAiMarketingAdvisor = () => {
 
-  const [isDone, setIsDone] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState("");
@@ -93,43 +87,33 @@ const useAiMarketingAdvisor = () => {
   });
 
 
-  const [conversation, setConversation] = useState([])
-  const [userInput, setUserInput] = useState('')
+  // const [conversation, setConversation] = useState([])
+  // const [userInput, setUserInput] = useState('')
 
 
-  const handleInputChange = e => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setPrompt(prevPrompt => ({
       ...prevPrompt,
       [e.target.id]: e.target.value
     }));
   };
 
-
-
-  // const handleSubmitted = async () => {
-  //   setLoading(true);
-  //   setError("");
-  //   axios.post("http://localhost:3001/api/generate-a-marketing-plan", prompt).then(res => {
-  //     console.log(res.data);
-  //     setLoading(false);
-  //   }).catch(err => {
-  //     console.log('Error Submitting data: ', err);
-  //     setLoading(false);
-  //   });
-  // };
+  const handleSlectInputChange = (value: string) => {
+    setPrompt({
+      ...prompt,
+      target_audience: value
+    });
+  }
 
   const handleSubmit = async () => {
     setLoading(true);
     setError("");
 
-    // console.log(prompt);
-
-    // return;
     try {
       const response = await fetch(`${BASEURL}/generate-marketing-advice`, {
         body: JSON.stringify(prompt),
         method: 'POST',
-        headers:{
+        headers: {
           Authorization: `Bearer ${localStorage.getItem("musette-jwt")}`
         }
       });
@@ -140,10 +124,12 @@ const useAiMarketingAdvisor = () => {
         const decoder = new TextDecoder();
         let done = false;
         while (!done) {
-          const { value, done: streamDone } = await reader?.read();
-          done = streamDone;
-          if (value) {
-            setData((prevData) => prevData + decoder.decode(value)); // Append new chunks
+          if (reader) {
+            const { value, done: streamDone } = await reader.read();
+            done = streamDone;
+            if (value) {
+              setData((prevData) => prevData + decoder.decode(value)); // Append new chunks
+            }
           }
         }
       }
@@ -155,6 +141,7 @@ const useAiMarketingAdvisor = () => {
   return {
     handleSubmit,
     handleInputChange,
+    handleSlectInputChange,
     data,
     loading,
     error,
@@ -179,7 +166,7 @@ export function AIMarketingAdvisor() {
   //   }
   // }
 
-  const { data, prompt, error, handleInputChange, handleSubmit, loading } = useAiMarketingAdvisor();
+  const { data, prompt, error, handleInputChange, handleSlectInputChange, handleSubmit, loading } = useAiMarketingAdvisor();
 
 
   const uiToShow = data ? 1 : 0;
@@ -192,6 +179,7 @@ export function AIMarketingAdvisor() {
         error={error}
         loading={loading}
         handleInputChange={handleInputChange}
+        handleSlectInputChange={handleSlectInputChange}
       />
     );
   }
@@ -199,6 +187,7 @@ export function AIMarketingAdvisor() {
   return (
     <>
       <AlertDialogDemo
+      handleSlectInputChange={handleSlectInputChange}
         prompt={prompt}
         data={data}
         error={error}

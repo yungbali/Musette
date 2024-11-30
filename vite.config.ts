@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(), 
     Checker({
-      typescript: false, // Disable TypeScript checking in the plugin
+      typescript: true, // Disable TypeScript checking in the plugin
     }),
   ],
   resolve: {

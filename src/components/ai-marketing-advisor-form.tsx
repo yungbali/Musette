@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { ChevronLeft, ChevronRight, LucideLoaderCircle, Send } from 'lucide-react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from "./ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card"
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"
+import { ChevronLeft, ChevronRight, LucideLoaderCircle } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
 
 
 interface PropsData {
     data: string;
     error: string;
-    handleInputChange: (e: React.ChangeEventHandler) => void;
+    handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+    handleSlectInputChange: (value: string)=> void;
     handleSubmit: () => Promise<void>;
     loading: boolean;
     prompt: {
@@ -38,26 +38,24 @@ interface PropsData {
 
 
 
-const AiMarketingAdvisorForm = ({ loading, handleInputChange, handleSubmit, prompt }: PropsData) => {
+const AiMarketingAdvisorForm = ({ loading, handleInputChange, handleSlectInputChange, handleSubmit, prompt }: PropsData) => {
 
     const [step, setStep] = useState(1)
     const nextStep = () => setStep(step + 1)
     const prevStep = () => setStep(step - 1)
 
-    const [conversation, setConversation] = useState([])
-    const [userInput, setUserInput] = useState('')
-
-
-    const handleSendMessage = () => {
-        if (userInput.trim()) {
-            setConversation([...conversation, { type: 'user', message: userInput }])
-            // Simulated AI response
-            setTimeout(() => {
-                setConversation(prev => [...prev, { type: 'ai', message: "Thank you for your input. I'm analyzing your data and will provide personalized marketing insights shortly." }])
-            }, 1000)
-            setUserInput('')
-        }
-    }
+    // const [conversation, setConversation] = useState<{type: string; message: string;}[]>([])
+    // const [userInput, setUserInput] = useState('')
+    // const handleSendMessage = () => {
+    //     if (userInput.trim()) {
+    //         setConversation([...conversation, { type: 'user', message: userInput }])
+    //         // Simulated AI response
+    //         setTimeout(() => {
+    //             setConversation(prev => [...prev, { type: 'ai', message: "Thank you for your input. I'm analyzing your data and will provide personalized marketing insights shortly." }])
+    //         }, 1000)
+    //         setUserInput('')
+    //     }
+    // }
 
     return (
         <>
@@ -82,8 +80,8 @@ const AiMarketingAdvisorForm = ({ loading, handleInputChange, handleSubmit, prom
                             </div>
                             <div>
                                 <Label htmlFor="target-audience">Target Audience</Label>
-                                <Select>
-                                    <SelectTrigger onChange={null} value={prompt.target_audience} id="target_audience">
+                                <Select onValueChange={handleSlectInputChange} value={prompt.target_audience}>
+                                    <SelectTrigger id="target_audience">
                                         <SelectValue placeholder="Select your target audience" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -112,7 +110,7 @@ const AiMarketingAdvisorForm = ({ loading, handleInputChange, handleSubmit, prom
                             </div>
                         </div>
                     )}
-                    {false && step === 3 && (
+                    {/* {false && step === 3 && (
                         <div className="space-y-4">
                             <div className="border rounded-lg p-4 h-64 overflow-y-auto">
                                 {conversation.map((msg, index) => (
@@ -135,7 +133,7 @@ const AiMarketingAdvisorForm = ({ loading, handleInputChange, handleSubmit, prom
                                 </Button>
                             </div>
                         </div>
-                    )}
+                    )} */}
                 </CardContent>
                 <CardFooter className="flex justify-between">
                     {step > 1 && (

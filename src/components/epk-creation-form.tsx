@@ -1,22 +1,23 @@
 import React, { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { Button } from "./ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card"
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"
+import { Textarea } from "./ui/textarea"
 import { ChevronLeft, ChevronRight, LucideLoaderCircle, Upload } from 'lucide-react' 
 
 interface PropsData {
     data: string;
     error: string;
-    handleInputChange: (e: React.ChangeEventHandler) => void;
+    handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
     handleSubmit: () => Promise<void>;
     loading: boolean;
     prompt: {
         artist_name: string;
         biography: string;
         genre: string;
-        profile_picture: string;
+        // profile_picture: string;
+        profile_picture: FileList | null;
         music_links: string;
         social_media: string;
         press_release_news: string;
